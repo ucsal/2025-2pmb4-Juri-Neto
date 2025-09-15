@@ -1,21 +1,26 @@
 
 package br.com.mariojp.figureeditor;
 
+import br.com.mariojp.figureeditor.figures.DrawableShape;
+import br.com.mariojp.figureeditor.figures.CircleShape;
+import br.com.mariojp.figureeditor.figures.RectangleShape;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.util.ArrayList;
 import java.util.List;
 
 class DrawingPanel extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-    private static final int DEFAULT_SIZE = 60;
+	private static final long serialVersionUID = 1L;
+    private static final int DEFAULT_SIZE = 40;
     private final List<Shape> shapes = new ArrayList<>();
     private Point startDrag = null;
+    
+    private DrawableShape currentShape = new CircleShape();
 
     DrawingPanel() {
         
@@ -24,11 +29,10 @@ class DrawingPanel extends JPanel {
         setDoubleBuffered(true);
 
         var mouse = new MouseAdapter() {
-            @Override public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 1 && startDrag == null) {
-                    int size = Math.max(Math.min(DEFAULT_SIZE, DEFAULT_SIZE), 10);
-                    Shape s =  new Ellipse2D.Double(e.getPoint().x, e.getPoint().y, size, size);
-                    //return new Rectangle2D.Double(e.getPoint().x, e.getPoint().y, Math.max(DEFAULT_SIZE, 10), Math.max(DEFAULT_SIZE, 10));
+                    int size = Math.max(DEFAULT_SIZE, 10);
+                    Shape s = currentShape.create(e.getPoint(), size);
                     shapes.add(s);
                     repaint();
                 }
